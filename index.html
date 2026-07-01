@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Library — 120 Great APIs with Free Tiers, Quotas & Copy-Paste Calls</title>
+<meta name="description" content="Curated library of 120 APIs across AI, maps, weather, payments, messaging and open data — free-tier quotas, country of origin, auth type, and copy-paste curl / fetch / Python calls.">
+<meta property="og:title" content="API Library — 120 Great APIs, Free & Paid">
+<meta property="og:description" content="Free-tier quotas, auth types and ready-to-run curl / fetch / Python snippets for 120 hand-picked APIs. Sister site of MCP Directory.">
+<meta property="og:type" content="website">
+<meta name="keywords" content="API list, free APIs, public APIs, API directory, free tier, curl examples, REST APIs, India APIs">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📡</text></svg>">
+<style>
+:root{
+  --bg:#06110f; --bg2:#0a1a17; --card:rgba(255,255,255,.045); --card-b:rgba(255,255,255,.09);
+  --tx:#e2e8f0; --tx2:#94a3b8; --tx3:#64748b;
+  --teal:#14b8a6; --blue:#3b82f6; --grad:linear-gradient(90deg,#14b8a6,#3b82f6,#8b5cf6);
+  --free:#22c55e; --freemium:#eab308; --paid:#ec4899;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.55;min-height:100vh;
+  background-image:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(20,184,166,.14),transparent),radial-gradient(ellipse 60% 40% at 90% 10%,rgba(59,130,246,.09),transparent)}
+a{color:var(--teal);text-decoration:none}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#14b8a6,#3b82f6);border-radius:4px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+header{padding:50px 0 26px;text-align:center}
+.sister{display:inline-block;margin-bottom:14px;padding:6px 14px;border:1px solid var(--card-b);border-radius:999px;background:var(--card);font-size:.8rem;color:var(--tx2)}
+h1{font-size:clamp(1.8rem,4.5vw,3rem);font-weight:800;letter-spacing:-.02em}
+h1 .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--tx2);max-width:740px;margin:14px auto 0;font-size:1.02rem}
+.explain{max-width:780px;margin:18px auto 0;padding:14px 18px;border:1px solid var(--card-b);border-radius:14px;background:var(--card);backdrop-filter:blur(8px);color:var(--tx2);font-size:.9rem;text-align:left}
+.explain b{color:var(--tx)}
+.stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+.stat{padding:8px 16px;border:1px solid var(--card-b);border-radius:999px;background:var(--card);font-size:.85rem;color:var(--tx2)}
+.stat b{color:var(--tx);font-size:1rem;margin-right:5px}
+
+.controls{position:sticky;top:0;z-index:50;background:rgba(6,17,15,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--card-b);padding:14px 0}
+.crow{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.search{flex:1;min-width:220px;position:relative}
+.search input{width:100%;padding:11px 16px 11px 40px;background:var(--card);border:1px solid var(--card-b);border-radius:12px;color:var(--tx);font-size:.95rem;outline:none;transition:border .2s}
+.search input:focus{border-color:var(--teal)}
+.search::before{content:"🔍";position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:.85rem;opacity:.7}
+.tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--card-b);border-radius:12px;padding:4px}
+.tab{padding:8px 16px;border-radius:9px;cursor:pointer;font-size:.88rem;color:var(--tx2);border:none;background:none;font-weight:600;transition:.18s;white-space:nowrap}
+.tab:hover{color:var(--tx)}
+.tab.on{color:#fff;background:linear-gradient(90deg,rgba(20,184,166,.35),rgba(59,130,246,.35));box-shadow:inset 0 0 0 1px rgba(20,184,166,.5)}
+.tab .cnt{opacity:.65;font-weight:400;margin-left:4px;font-size:.78rem}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.chip{padding:6px 13px;border-radius:999px;border:1px solid var(--card-b);background:var(--card);color:var(--tx2);cursor:pointer;font-size:.8rem;transition:.18s}
+.chip:hover{color:var(--tx);border-color:var(--teal)}
+.chip.on{color:#fff;border-color:var(--teal);background:rgba(20,184,166,.22)}
+.tierdefs{margin-top:10px;font-size:.75rem;color:var(--tx3)}
+.tierdefs b{font-weight:600}
+.tierdefs .d-free{color:var(--free)}.tierdefs .d-freemium{color:var(--freemium)}.tierdefs .d-paid{color:var(--paid)}
+
+main{padding:26px 0 60px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px}
+.card{border:1px solid var(--card-b);border-radius:16px;background:var(--card);backdrop-filter:blur(8px);padding:18px;display:flex;flex-direction:column;gap:10px;transition:transform .18s,border-color .18s}
+.card:hover{transform:translateY(-3px);border-color:rgba(20,184,166,.45)}
+.chead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.cname{font-weight:700;font-size:1.02rem}
+.cname .fl{margin-right:7px}
+.flimg{border-radius:2px;vertical-align:-1px;box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+.badges{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.b{font-size:.66rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.b-nokey{background:rgba(20,184,166,.16);color:#5eead4;border:1px solid rgba(20,184,166,.35)}
+.b-key{background:rgba(59,130,246,.16);color:#93c5fd;border:1px solid rgba(59,130,246,.35)}
+.b-basic{background:rgba(139,92,246,.16);color:#c4b5fd;border:1px solid rgba(139,92,246,.35)}
+.b-free{background:rgba(34,197,94,.14);color:#86efac;border:1px solid rgba(34,197,94,.35)}
+.b-freemium{background:rgba(234,179,8,.13);color:#fde047;border:1px solid rgba(234,179,8,.35)}
+.b-paid{background:rgba(236,72,153,.14);color:#f9a8d4;border:1px solid rgba(236,72,153,.35)}
+.use{color:var(--tx2);font-size:.88rem;flex:1}
+.quota{font-size:.78rem;color:#86efac;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.18);border-radius:9px;padding:7px 10px}
+.cfoot{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.78rem;color:var(--tx3)}
+.cmeta{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.cbtns{display:flex;gap:8px}
+.btn{padding:7px 14px;border-radius:9px;border:1px solid var(--card-b);background:var(--card);color:var(--tx);cursor:pointer;font-size:.8rem;font-weight:600;transition:.18s;white-space:nowrap}
+.btn:hover{border-color:var(--teal)}
+.btn.p{background:linear-gradient(90deg,rgba(20,184,166,.3),rgba(59,130,246,.3));border-color:rgba(20,184,166,.5)}
+.btn.p:hover{box-shadow:0 0 18px rgba(20,184,166,.35)}
+
+.panel{display:none;border-top:1px solid var(--card-b);padding-top:12px;margin-top:2px}
+.panel.open{display:block}
+.ctabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.ctab{padding:5px 11px;border-radius:7px;border:1px solid var(--card-b);background:none;color:var(--tx2);cursor:pointer;font-size:.74rem;font-weight:600}
+.ctab.on{color:#fff;border-color:var(--teal);background:rgba(20,184,166,.2)}
+.snip{position:relative;background:#04100d;border:1px solid var(--card-b);border-radius:10px;padding:34px 12px 12px 12px;overflow-x:auto}
+.snip pre{font-family:'Cascadia Code',Consolas,monospace;font-size:.74rem;color:#99f6e4;white-space:pre;line-height:1.5}
+.copy{position:absolute;top:8px;right:8px;background:var(--card);border:1px solid var(--card-b);border-radius:7px;color:var(--tx2);cursor:pointer;padding:4px 8px;font-size:.72rem}
+.copy:hover{color:var(--tx);border-color:var(--teal)}
+.docsonly{font-size:.85rem;color:var(--tx2)}
+.empty{text-align:center;color:var(--tx3);padding:70px 0;font-size:1rem;grid-column:1/-1}
+
+footer{border-top:1px solid var(--card-b);padding:34px 0 46px;color:var(--tx3);font-size:.83rem}
+.fsec{max-width:820px;margin:0 auto 20px;padding:14px 18px;border:1px solid rgba(234,179,8,.22);background:rgba(234,179,8,.05);border-radius:13px;color:#d4c48a;text-align:center}
+.frow{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center}
+.frow a{color:var(--tx2)}
+.frow a:hover{color:var(--tx)}
+.top{position:fixed;bottom:22px;right:22px;width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#14b8a6,#3b82f6);border:none;color:#fff;font-size:1.1rem;cursor:pointer;opacity:0;pointer-events:none;transition:.25s;z-index:60;box-shadow:0 4px 18px rgba(20,184,166,.4)}
+.top.show{opacity:1;pointer-events:auto}
+@media(max-width:640px){ .grid{grid-template-columns:1fr} header{padding:36px 0 20px} }
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <a class="sister" href="https://mcp-directory-jade.vercel.app">🔌 Sister site: MCP Directory ↗</a>
+  <h1>📡 <span class="g">API Library</span></h1>
+  <p class="sub">A curated library of <b id="totalN">120</b> APIs worth knowing — real free-tier quotas, auth type, country of origin, and copy-paste <b>curl / fetch / Python</b> calls for every one.</p>
+  <div class="explain">
+    <b>API ≠ MCP.</b> An <b>API</b> is a service's raw HTTP interface — you call it directly from code, any language, no AI needed. An <b>MCP server</b> is a connector that wraps APIs so AI agents can use them. This library is the raw layer: pick an API here, call it from your own code — or check the <a href="https://mcp-directory-jade.vercel.app">MCP Directory</a> for an agent-ready wrapper.
+  </div>
+  <div class="stats" id="stats"></div>
+</header>
+
+<div class="controls">
+  <div class="wrap">
+    <div class="crow">
+      <div class="search"><input id="q" type="search" placeholder="Search APIs, use cases, countries…" autocomplete="off"></div>
+      <div class="tabs" id="tiertabs"></div>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="tierdefs">
+      <b class="d-free">Free</b> = works end-to-end at $0 · <b class="d-freemium">Freemium</b> = free tier exists, real usage needs a paid plan · <b class="d-paid">Paid</b> = paid product/API required · flag = company HQ, 🌐 = global/community
+    </div>
+  </div>
+</div>
+
+<main class="wrap"><div class="grid" id="grid"></div></main>
+
+<footer>
+  <div class="wrap">
+    <div class="fsec">⚠️ <b>Key hygiene:</b> never ship API keys in frontend code or commits — keep them server-side or in env vars. Quotas listed are point-in-time; check the provider's pricing page before you build on one.</div>
+    <div class="frow">
+      <span>API Library · curated by <a href="https://github.com/dev48v" target="_blank" rel="noopener">dev48v</a> · last updated <span id="upd">2026-07-02</span></span>
+      <span><a href="https://mcp-directory-jade.vercel.app">🔌 MCP Directory ↗</a> · <a href="https://github.com/dev48v/api-library/issues/new" target="_blank" rel="noopener">Submit an API ↗</a> · <a href="https://github.com/dev48v/api-library" target="_blank" rel="noopener">Source ↗</a></span>
+    </div>
+  </div>
+</footer>
+<button class="top" id="top" aria-label="Back to top">↑</button>
+
+<script src="data.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+let tier="all", cat="all", q="";
+const LANGS=[["curl","curl"],["js","JS fetch"],["py","Python"]];
+
+function flag(cc){ if(!cc) return "🌐"; return `<img class="flimg" src="https://flagcdn.com/20x15/${cc.toLowerCase()}.png" srcset="https://flagcdn.com/40x30/${cc.toLowerCase()}.png 2x" width="20" height="15" alt="${cc}" loading="lazy">`; }
+function ccName(cc){ try{ return cc?new Intl.DisplayNames(["en"],{type:"region"}).of(cc):"Global"; }catch(e){ return cc||"Global"; } }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+function authBadge(a){
+  if(a.t==="none") return ["nokey","no key"];
+  if(a.t==="basic") return ["basic","basic auth"];
+  return ["key","API key"];
+}
+function headersFor(a){
+  const h={};
+  if(a.t==="bearer") h["Authorization"]="Bearer <YOUR_KEY>";
+  else if(a.t==="header") h[a.k]="<YOUR_KEY>";
+  return h;
+}
+function snippet(api,lang){
+  const ep=api.ep; if(!ep) return null;
+  const h={...headersFor(api.auth),...(ep.h||{})};
+  const isJson=ep.b&&typeof ep.b==="object";
+  const bodyStr=isJson?JSON.stringify(ep.b,null,2):(ep.b||null);
+  if(lang==="curl"){
+    let c=`curl${ep.m!=="GET"?" -X "+ep.m:""} "${ep.u}"`;
+    if(api.auth.t==="basic") c+=` \\\n  -u "<USER>:<SECRET>"`;
+    for(const [k,v] of Object.entries(h)) c+=` \\\n  -H "${k}: ${v}"`;
+    if(bodyStr) c+=` \\\n  -d '${isJson?JSON.stringify(ep.b):bodyStr}'`;
+    return c;
+  }
+  if(lang==="js"){
+    const opts=[];
+    if(ep.m!=="GET") opts.push(`method: "${ep.m}"`);
+    const hh={...h}; if(api.auth.t==="basic") hh["Authorization"]="Basic "+"<base64(user:secret)>";
+    if(Object.keys(hh).length) opts.push(`headers: ${JSON.stringify(hh,null,2).replace(/\n/g,"\n  ")}`);
+    if(bodyStr) opts.push(isJson?`body: JSON.stringify(${JSON.stringify(ep.b)})`:`body: "${bodyStr}"`);
+    return `const res = await fetch("${ep.u}"${opts.length?`, {\n  ${opts.join(",\n  ")}\n}`:""});\nconst data = await res.json();\nconsole.log(data);`;
+  }
+  if(lang==="py"){
+    const hh={...h};
+    let call, extra="";
+    if(api.auth.t==="basic") extra=`, auth=("<USER>", "<SECRET>")`;
+    const hArg=Object.keys(hh).length?`, headers=${JSON.stringify(hh)}`:"";
+    if(ep.m==="GET") call=`requests.get("${ep.u}"${hArg}${extra})`;
+    else if(isJson) call=`requests.${ep.m.toLowerCase()}("${ep.u}"${hArg}${extra}, json=${JSON.stringify(ep.b)})`;
+    else call=`requests.${ep.m.toLowerCase()}("${ep.u}"${hArg}${extra}${bodyStr?`, data="${bodyStr}"`:""})`;
+    return `import requests\n\nres = ${call}\nprint(res.json())`;
+  }
+}
+
+function card(a){
+  const c=CATS[a.cat], [ak,al]=authBadge(a.auth);
+  return `<div class="card" data-id="${a.id}">
+    <div class="chead">
+      <div class="cname"><span class="fl" title="${esc(ccName(a.cc))}">${flag(a.cc)}</span>${esc(a.n)}</div>
+      <div class="badges"><span class="b b-${ak}">${al}</span><span class="b b-${a.tier}">${a.tier}</span></div>
+    </div>
+    <div class="use">${esc(a.use)}</div>
+    <div class="quota">🎁 ${esc(a.quota)}</div>
+    <div class="cfoot">
+      <div class="cmeta"><span>${c.icon} ${c.label}</span></div>
+      <div class="cbtns">
+        <a class="btn" href="${a.docs}" target="_blank" rel="noopener">Docs ↗</a>
+        <button class="btn p" onclick="togglePanel('${a.id}')">Call it</button>
+      </div>
+    </div>
+    <div class="panel" id="p-${a.id}"></div>
+  </div>`;
+}
+
+function togglePanel(id){
+  const el=$("#p-"+id), a=APIS.find(x=>x.id===id);
+  if(el.classList.contains("open")){ el.classList.remove("open"); return; }
+  document.querySelectorAll(".panel.open").forEach(p=>p.classList.remove("open"));
+  if(!a.ep){
+    el.innerHTML=`<div class="docsonly">Auth flow is more involved (signed/OAuth/onboarding) — start here: <a href="${a.docs}" target="_blank" rel="noopener">official docs ↗</a></div>`;
+  } else {
+    el.innerHTML=`<div class="ctabs">${LANGS.map(([k,l],i)=>`<button class="ctab${i===0?" on":""}" onclick="showSnip('${id}','${k}',this)">${l}</button>`).join("")}</div><div id="sn-${id}"></div>`;
+    showSnip(id,"curl",null);
+  }
+  el.classList.add("open");
+}
+function showSnip(id,lang,btn){
+  const a=APIS.find(x=>x.id===id), code=snippet(a,lang);
+  if(btn){ btn.parentElement.querySelectorAll(".ctab").forEach(b=>b.classList.remove("on")); btn.classList.add("on"); }
+  $("#sn-"+id).innerHTML=`<div class="snip"><button class="copy" onclick="copySnip(this)">📋 copy</button><pre>${esc(code)}</pre></div>`;
+}
+function copySnip(btn){
+  navigator.clipboard.writeText(btn.nextElementSibling.textContent).then(()=>{ btn.textContent="✅ copied"; setTimeout(()=>btn.textContent="📋 copy",1400); });
+}
+
+function render(){
+  const list=APIS.filter(a=>
+    (tier==="all"||a.tier===tier)&&(cat==="all"||a.cat===cat)&&
+    (!q||(a.n+" "+a.use+" "+CATS[a.cat].label+" "+ccName(a.cc)).toLowerCase().includes(q)));
+  $("#grid").innerHTML=list.length?list.map(card).join(""):`<div class="empty">No APIs match — try another search.</div>`;
+}
+function renderControls(){
+  const cnt=t=>APIS.filter(a=>t==="all"||a.tier===t).length;
+  $("#tiertabs").innerHTML=[["all","All"],["free","🆓 Free"],["freemium","🔑 Freemium"],["paid","💎 Paid"]]
+    .map(([k,l])=>`<button class="tab${k===tier?" on":""}" data-t="${k}">${l}<span class="cnt">${cnt(k)}</span></button>`).join("");
+  document.querySelectorAll("#tiertabs .tab").forEach(b=>b.onclick=()=>{tier=b.dataset.t;renderControls();render();});
+  const cats=[["all","All categories"],...Object.entries(CATS).filter(([k])=>APIS.some(a=>a.cat===k)).map(([k,v])=>[k,v.icon+" "+v.label])];
+  $("#chips").innerHTML=cats.map(([k,l])=>`<button class="chip${k===cat?" on":""}" data-c="${k}">${l}</button>`).join("");
+  document.querySelectorAll("#chips .chip").forEach(b=>b.onclick=()=>{cat=b.dataset.c;renderControls();render();});
+}
+function renderStats(){
+  const n=t=>APIS.filter(a=>a.tier===t).length;
+  const nokey=APIS.filter(a=>a.auth.t==="none").length, ind=APIS.filter(a=>a.cat==="india").length;
+  $("#totalN").textContent=APIS.length;
+  $("#stats").innerHTML=`<span class="stat"><b>${APIS.length}</b> APIs</span>
+    <span class="stat"><b style="color:var(--free)">${n("free")}</b> free</span>
+    <span class="stat"><b style="color:var(--freemium)">${n("freemium")}</b> freemium</span>
+    <span class="stat"><b style="color:var(--paid)">${n("paid")}</b> paid</span>
+    <span class="stat"><b style="color:var(--teal)">${nokey}</b> no key needed</span>
+    <span class="stat"><b>${ind}</b> ${flag("IN")} India</span>`;
+}
+$("#q").addEventListener("input",e=>{q=e.target.value.trim().toLowerCase();render();});
+window.addEventListener("scroll",()=>$("#top").classList.toggle("show",scrollY>500));
+$("#top").onclick=()=>scrollTo({top:0,behavior:"smooth"});
+renderStats();renderControls();render();
+</script>
+</body>
+</html>
