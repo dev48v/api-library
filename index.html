@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>API Library — 120 Great APIs with Free Tiers, Quotas & Copy-Paste Calls</title>
+<title>API Library — 120 Curated APIs + 1,400 Catalog, Free Tiers & Copy-Paste Calls</title>
 <meta name="description" content="Curated library of 120 APIs across AI, maps, weather, payments, messaging and open data — free-tier quotas, country of origin, auth type, and copy-paste curl / fetch / Python calls.">
 <meta property="og:title" content="API Library — 120 Great APIs, Free & Paid">
 <meta property="og:description" content="Free-tier quotas, auth types and ready-to-run curl / fetch / Python snippets for 120 hand-picked APIs. Sister site of MCP Directory.">
@@ -110,7 +110,7 @@ footer{border-top:1px solid var(--card-b);padding:34px 0 46px;color:var(--tx3);f
 <header class="wrap">
   <a class="sister" href="https://mcp-directory-jade.vercel.app">🔌 Sister site: MCP Directory ↗</a>
   <h1>📡 <span class="g">API Library</span></h1>
-  <p class="sub">A curated library of <b id="totalN">120</b> APIs worth knowing — real free-tier quotas, auth type, country of origin, and copy-paste <b>curl / fetch / Python</b> calls for every one.</p>
+  <p class="sub">A curated library of <b id="totalN">120</b> APIs worth knowing — real free-tier quotas, auth type, country of origin, and copy-paste <b>curl / fetch / Python</b> calls for every one — plus a <b>1,392-API extended catalog</b>.</p>
   <div class="explain">
     <b>API ≠ MCP.</b> An <b>API</b> is a service's raw HTTP interface — you call it directly from code, any language, no AI needed. An <b>MCP server</b> is a connector that wraps APIs so AI agents can use them. This library is the raw layer: pick an API here, call it from your own code — or check the <a href="https://mcp-directory-jade.vercel.app">MCP Directory</a> for an agent-ready wrapper.
   </div>
@@ -144,9 +144,10 @@ footer{border-top:1px solid var(--card-b);padding:34px 0 46px;color:var(--tx3);f
 <button class="top" id="top" aria-label="Back to top">↑</button>
 
 <script src="data.js"></script>
+<script src="catalog.js"></script>
 <script>
 const $=s=>document.querySelector(s);
-let tier="all", cat="all", q="";
+let tier="all", cat="all", q="", ccat="all", catN=90;
 const LANGS=[["curl","curl"],["js","JS fetch"],["py","Python"]];
 
 function flag(cc){ if(!cc) return "🌐"; return `<img class="flimg" src="https://flagcdn.com/20x15/${cc.toLowerCase()}.png" srcset="https://flagcdn.com/40x30/${cc.toLowerCase()}.png 2x" width="20" height="15" alt="${cc}" loading="lazy">`; }
@@ -236,20 +237,46 @@ function copySnip(btn){
   navigator.clipboard.writeText(btn.nextElementSibling.textContent).then(()=>{ btn.textContent="✅ copied"; setTimeout(()=>btn.textContent="📋 copy",1400); });
 }
 
+const AB={none:["nokey","no key"],key:["key","API key"],oauth:["basic","OAuth"],other:["key","auth"]};
+function liteCard(r){
+  const [ak,al]=AB[r.a]||AB.other;
+  return `<div class="card" style="gap:8px">
+    <div class="chead"><div class="cname">${esc(r.n)}</div>
+      <div class="badges"><span class="b b-${ak}">${al}</span>${r.h?'':'<span class="b b-paid">no https</span>'}</div></div>
+    <div class="use">${esc(r.d)}</div>
+    <div class="cfoot"><div class="cmeta"><span>📚 ${esc(r.cat)}</span><span>CORS: ${esc(r.c||"?")}</span></div>
+      <div class="cbtns"><a class="btn" href="${r.u}" target="_blank" rel="noopener">Open ↗</a></div></div>
+  </div>`;
+}
+function renderCatalog(){
+  const list=CATALOG.filter(r=>(ccat==="all"||r.cat===ccat)&&(!q||(r.n+" "+r.d+" "+r.cat).toLowerCase().includes(q)));
+  const shown=list.slice(0,catN);
+  $("#grid").innerHTML=(shown.length?shown.map(liteCard).join(""):`<div class="empty">No catalog APIs match.</div>`)+
+    (list.length>catN?`<button class="btn p" style="grid-column:1/-1;padding:12px" onclick="catN+=180;render()">Load more (${list.length-catN} left)</button>`:"");
+}
 function render(){
+  if(tier==="cat"){renderCatalog();return;}
   const list=APIS.filter(a=>
     (tier==="all"||a.tier===tier)&&(cat==="all"||a.cat===cat)&&
     (!q||(a.n+" "+a.use+" "+CATS[a.cat].label+" "+ccName(a.cc)).toLowerCase().includes(q)));
   $("#grid").innerHTML=list.length?list.map(card).join(""):`<div class="empty">No APIs match — try another search.</div>`;
 }
 function renderControls(){
-  const cnt=t=>APIS.filter(a=>t==="all"||a.tier===t).length;
-  $("#tiertabs").innerHTML=[["all","All"],["free","🆓 Free"],["freemium","🔑 Freemium"],["paid","💎 Paid"]]
+  const cnt=t=>t==="cat"?CATALOG.length:APIS.filter(a=>t==="all"||a.tier===t).length;
+  $("#tiertabs").innerHTML=[["all","All"],["free","🆓 Free"],["freemium","🔑 Freemium"],["paid","💎 Paid"],["cat","📚 Catalog"]]
     .map(([k,l])=>`<button class="tab${k===tier?" on":""}" data-t="${k}">${l}<span class="cnt">${cnt(k)}</span></button>`).join("");
   document.querySelectorAll("#tiertabs .tab").forEach(b=>b.onclick=()=>{tier=b.dataset.t;renderControls();render();});
+  if(tier==="cat"){
+    const ccats=["all",...[...new Set(CATALOG.map(r=>r.cat))].sort()];
+    $("#chips").innerHTML=`<select id="ccatsel" class="chip" style="padding:8px 12px;background:var(--card);color:var(--tx)">`+
+      ccats.map(k=>`<option value="${k}"${k===ccat?" selected":""}>${k==="all"?"All 51 categories":k}</option>`).join("")+`</select>
+      <span style="font-size:.75rem;color:var(--tx3);align-self:center">Extended catalog from <a href="https://github.com/public-apis/public-apis" target="_blank" rel="noopener">public-apis</a> — auth type shown; pricing/quotas unverified. Overlaps live in the curated tabs.</span>`;
+    $("#ccatsel").onchange=e=>{ccat=e.target.value;catN=90;render();};
+  } else {
   const cats=[["all","All categories"],...Object.entries(CATS).filter(([k])=>APIS.some(a=>a.cat===k)).map(([k,v])=>[k,v.icon+" "+v.label])];
   $("#chips").innerHTML=cats.map(([k,l])=>`<button class="chip${k===cat?" on":""}" data-c="${k}">${l}</button>`).join("");
   document.querySelectorAll("#chips .chip").forEach(b=>b.onclick=()=>{cat=b.dataset.c;renderControls();render();});
+  }
 }
 function renderStats(){
   const n=t=>APIS.filter(a=>a.tier===t).length;
@@ -260,7 +287,8 @@ function renderStats(){
     <span class="stat"><b style="color:var(--freemium)">${n("freemium")}</b> freemium</span>
     <span class="stat"><b style="color:var(--paid)">${n("paid")}</b> paid</span>
     <span class="stat"><b style="color:var(--teal)">${nokey}</b> no key needed</span>
-    <span class="stat"><b>${ind}</b> ${flag("IN")} India</span>`;
+    <span class="stat"><b>${ind}</b> ${flag("IN")} India</span>
+    <span class="stat"><b>${CATALOG.length}</b> 📚 catalog</span>`;
 }
 $("#q").addEventListener("input",e=>{q=e.target.value.trim().toLowerCase();render();});
 window.addEventListener("scroll",()=>$("#top").classList.toggle("show",scrollY>500));
