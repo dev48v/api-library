@@ -1,6 +1,6 @@
 # 📡 API Library
 
-A curated library of **120 APIs worth knowing** (+ **1,392-entry extended catalog** from public-apis) — real free-tier quotas, auth type, country of origin, and copy-paste **curl / JS fetch / Python** calls for every one.
+A curated library of **120 APIs worth knowing** (+ **1,953-entry tiered catalog** merged from 4 public lists) — real free-tier quotas, auth type, country of origin, and copy-paste **curl / JS fetch / Python** calls for every one.
 
 **Live:** deployed on Vercel · single static page, no build step. Sister site of [MCP Directory](https://github.com/dev48v/mcp-directory).
 
@@ -23,7 +23,8 @@ AI & LLM · Search & News · Maps & Geo · Weather · Finance & Crypto · Paymen
 | `index.html` | The whole site — tabs, search, filters, snippet generator |
 | `data.js` | Curated API data (source of truth) |
 | `verify-docs.mjs` | Checks every docs link is alive |
-| `catalog.js` | Extended catalog, generated — 1,392 entries |
+| `catalog.js` | Extended catalog, generated — 1,953 tiered entries |
+| `merge-tiers.mjs` | Merges tier verdicts into catalog.js |
 | `parse-catalog.mjs` | Rebuilds catalog.js from public-apis README (fetch raw, no clone) |
 
 ## Updating
