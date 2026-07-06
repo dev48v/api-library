@@ -1,16 +1,20 @@
 # 📡 API Library
 
-A curated library of **120 APIs worth knowing** (+ **1,998-entry tiered catalog** merged from 6 public lists (incl. GraphQL + free-LLM niches)) — real free-tier quotas, auth type, country of origin, and copy-paste **curl / JS fetch / Python** calls for every one.
+**5,000+ APIs in one place.** Live: **https://api-library-two.vercel.app** — a single static page, no build step. Sister site of [MCP Directory](https://github.com/dev48v/mcp-directory).
 
-**Live:** deployed on Vercel · single static page, no build step. Sister site of [MCP Directory](https://github.com/dev48v/mcp-directory).
+Three layers:
 
-## What's in a card
+1. **120+ hand-curated APIs** — real free-tier quotas, auth type, country flag, and copy-paste **curl / JS fetch / Python** calls for every one.
+2. **2,077-API tiered catalog** — merged from 6 public lists (public-apis, marcelscruz, public-api-lists, n0shake, APIs-guru GraphQL, cheahjs free-LLM); every entry auto-classified free / freemium / paid.
+3. **India government directory** — the full [API Setu](https://apisetu.gov.in) catalog: **2,822 publishers · 8,769 APIs**, browsable by Use Case, Organization Type, Category and Location (with state maps), Setu-style faceted filtering.
 
-- **Flag** — company/org HQ country (🌐 = global/community project)
+## What's in a curated card
+
+- **Flag** — company/org HQ country (🌐 = global/community)
 - **Auth badge** — no key / API key / basic auth
 - **Tier** — 🆓 Free (works at $0) · 🔑 Freemium (free tier, real usage costs) · 💎 Paid
-- **🎁 Quota** — the actual free-tier limit (e.g. "100 emails/day", "2,500 req/day")
-- **Call it** — working sample request in curl, fetch and Python with copy buttons
+- **🎁 Quota** — the actual free-tier limit (e.g. "100 emails/day")
+- **Call it** — working curl / fetch / Python sample with copy buttons
 
 ## Categories
 
@@ -20,21 +24,14 @@ AI & LLM · Search & News · Maps & Geo · Weather · Finance & Crypto · Paymen
 
 | File | Purpose |
 |---|---|
-| `index.html` | The whole site — tabs, search, filters, snippet generator |
+| `index.html` | The whole site — tabs, search, filters, snippet generator, India gov browser |
 | `data.js` | Curated API data (source of truth) |
-| `verify-docs.mjs` | Checks every docs link is alive |
-| `catalog.js` | Extended catalog, generated — 1,998 tiered entries |
-| `merge-tiers.mjs` | Merges tier verdicts into catalog.js |
-| `parse-catalog.mjs` | Rebuilds catalog.js from public-apis README (fetch raw, no clone) |
+| `catalog.js` | Extended tiered catalog, generated (~2,077 entries) |
+| `india-gov.js` | API Setu government directory (2,822 publishers + state map paths), generated |
+| `parse-catalog.mjs` | Rebuilds `catalog.js` from the 6 public lists (raw fetch, no clone) |
+| `merge-tiers.mjs` | Merges tier verdicts into `catalog.js` |
+| `verify-docs.mjs` | Checks every curated docs link is alive |
 
-## Updating
+## Contributing
 
-```bash
-node verify-docs.mjs   # validate all docs URLs
-```
-
-Add an API: append an entry to `APIS` in `data.js` (field comments at the top), run the verify script.
-
-## Submit an API
-
-Open an [issue](../../issues/new) with: name, docs URL, what it does, free-tier quota, auth type, HQ country.
+New APIs, fixed quotas/links and better descriptions are welcome. See **[CONTRIBUTING.md](CONTRIBUTING.md)** for the entry format and naming rules, then open a PR (one entry per PR). Self-submissions are fine if accurate and format-following. Licensed **MIT** — see [LICENSE](LICENSE).
