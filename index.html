@@ -35,7 +35,9 @@ h1 .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;c
 .explain{max-width:780px;margin:18px auto 0;padding:14px 18px;border:1px solid var(--card-b);border-radius:14px;background:var(--card);backdrop-filter:blur(8px);color:var(--tx2);font-size:.9rem;text-align:left}
 .explain b{color:var(--tx)}
 .stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
-.stat{padding:8px 16px;border:1px solid var(--card-b);border-radius:999px;background:var(--card);font-size:.85rem;color:var(--tx2)}
+.stat{padding:8px 16px;border:1px solid var(--card-b);border-radius:999px;background:var(--card);font-size:.85rem;color:var(--tx2);cursor:pointer;transition:.18s}
+.stat:hover{border-color:var(--teal);color:var(--tx)}
+.stat.on{border-color:var(--teal);background:rgba(20,184,166,.2);color:#fff;box-shadow:0 0 12px rgba(20,184,166,.25)}
 .stat b{color:var(--tx);font-size:1rem;margin-right:5px}
 
 .controls{position:sticky;top:0;z-index:50;background:rgba(6,17,15,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--card-b);padding:14px 0}
@@ -121,11 +123,10 @@ footer{border-top:1px solid var(--card-b);padding:34px 0 46px;color:var(--tx3);f
   <div class="wrap">
     <div class="crow">
       <div class="search"><input id="q" type="search" placeholder="Search APIs, use cases, countries…" autocomplete="off"></div>
-      <div class="tabs" id="tiertabs"></div>
     </div>
     <div class="chips" id="chips"></div>
     <div class="tierdefs">
-      <b class="d-free">Free</b> = works end-to-end at $0 · <b class="d-freemium">Freemium</b> = free tier exists, real usage needs a paid plan · <b class="d-paid">Paid</b> = paid product/API required · flag = company HQ, 🌐 = global/community
+      <a href="javascript:void(0)" id="catbrowse">📚 browse catalog by category</a> · <b class="d-free">Free</b> = works end-to-end at $0 · <b class="d-freemium">Freemium</b> = free tier exists, real usage needs a paid plan · <b class="d-paid">Paid</b> = paid product/API required · flag = company HQ, 🌐 = global/community
     </div>
   </div>
 </div>
@@ -257,16 +258,18 @@ function renderCatalog(){
 }
 function render(){
   if(tier==="cat"){renderCatalog();return;}
-  const list=APIS.filter(a=>
-    (tier==="all"||a.tier===tier)&&(cat==="all"||a.cat===cat)&&
-    (!q||(a.n+" "+a.use+" "+CATS[a.cat].label+" "+ccName(a.cc)).toLowerCase().includes(q)));
-  $("#grid").innerHTML=list.length?list.map(card).join(""):`<div class="empty">No APIs match — try another search.</div>`;
+  const ql=x=>!q||x.toLowerCase().includes(q);
+  const curOk=a=> (tier==="all"?true:tier==="nokey"?a.auth.t==="none":tier==="india"?a.cat==="india":a.tier===tier)
+    &&(cat==="all"||a.cat===cat)&&ql(a.n+" "+a.use+" "+CATS[a.cat].label+" "+ccName(a.cc));
+  const extOk=r=> (tier==="all"?true:tier==="nokey"?r.a==="none":tier==="india"?!!r.ind:r.t===tier)
+    &&ql(r.n+" "+r.d+" "+r.cat);
+  const cur=APIS.filter(curOk);
+  const ext=cat==="all"?CATALOG.filter(extOk):[];
+  const shown=ext.slice(0,catN);
+  $("#grid").innerHTML=(cur.map(card).join("")+shown.map(liteCard).join("")||`<div class="empty">No APIs match — try another search.</div>`)+
+    (ext.length>catN?`<button class="btn p" style="grid-column:1/-1;padding:12px" onclick="catN+=180;render()">Load more (${ext.length-catN} left)</button>`:"");
 }
 function renderControls(){
-  const cnt=t=>t==="cat"?CATALOG.length:APIS.filter(a=>t==="all"||a.tier===t).length;
-  $("#tiertabs").innerHTML=[["all","All"],["free","🆓 Free"],["freemium","🔑 Freemium"],["paid","💎 Paid"],["cat","📚 Catalog"]]
-    .map(([k,l])=>`<button class="tab${k===tier?" on":""}" data-t="${k}">${l}<span class="cnt">${cnt(k)}</span></button>`).join("");
-  document.querySelectorAll("#tiertabs .tab").forEach(b=>b.onclick=()=>{tier=b.dataset.t;renderControls();render();});
   if(tier==="cat"){
     const ccats=["all",...[...new Set(CATALOG.map(r=>r.cat))].sort()];
     $("#chips").innerHTML=`<select id="ccatsel" class="chip" style="padding:8px 12px;background:var(--card);color:var(--tx)">`+
@@ -281,22 +284,30 @@ function renderControls(){
   } else {
   const cats=[["all","All categories"],...Object.entries(CATS).filter(([k])=>APIS.some(a=>a.cat===k)).map(([k,v])=>[k,v.icon+" "+v.label])];
   $("#chips").innerHTML=cats.map(([k,l])=>`<button class="chip${k===cat?" on":""}" data-c="${k}">${l}</button>`).join("");
-  document.querySelectorAll("#chips .chip").forEach(b=>b.onclick=()=>{cat=b.dataset.c;renderControls();render();});
+  document.querySelectorAll("#chips .chip").forEach(b=>b.onclick=()=>{cat=b.dataset.c;renderStats();renderControls();render();});
   }
 }
 function renderStats(){
   const n=t=>APIS.filter(a=>a.tier===t).length;
-  const nokey=APIS.filter(a=>a.auth.t==="none").length, ind=APIS.filter(a=>a.cat==="india").length;
+  const cn=t=>CATALOG.filter(r=>r.t===t).length;
+  const nokey=APIS.filter(a=>a.auth.t==="none").length+CATALOG.filter(r=>r.a==="none").length;
+  const ind=APIS.filter(a=>a.cat==="india").length+CATALOG.filter(r=>r.ind).length;
   $("#totalN").textContent=APIS.length;
-  $("#stats").innerHTML=`<span class="stat"><b>${APIS.length}</b> APIs</span>
-    <span class="stat"><b style="color:var(--free)">${n("free")}</b> free</span>
-    <span class="stat"><b style="color:var(--freemium)">${n("freemium")}</b> freemium</span>
-    <span class="stat"><b style="color:var(--paid)">${n("paid")}</b> paid</span>
-    <span class="stat"><b style="color:var(--teal)">${nokey}</b> no key needed</span>
-    <span class="stat"><b>${ind}</b> ${flag("IN")} India</span>
-    <span class="stat"><b>${CATALOG.length}</b> 📚 catalog</span>`;
+  const on=k=>(tier===k)?" on":"";
+  $("#stats").innerHTML=`<div style="width:100%;display:flex;justify-content:center;margin-bottom:10px">
+    <span class="stat${on("all")}" data-f="all" style="font-size:1rem;padding:10px 22px"><b>${APIS.length}</b> curated + <b>${CATALOG.length}</b> catalog = <b style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent">${APIS.length+CATALOG.length}</b> APIs</span></div>
+    <span class="stat${on("free")}" data-f="free"><b style="color:var(--free)">${n("free")+cn("free")}</b> free</span>
+    <span class="stat${on("freemium")}" data-f="freemium"><b style="color:var(--freemium)">${n("freemium")+cn("freemium")}</b> freemium</span>
+    <span class="stat${on("paid")}" data-f="paid"><b style="color:var(--paid)">${n("paid")+cn("paid")}</b> paid</span>
+    <span class="stat${on("nokey")}" data-f="nokey"><b style="color:var(--teal)">${nokey}</b> no key needed</span>
+    <span class="stat${on("india")}" data-f="india"><b>${ind}</b> ${flag("IN")} India</span>`;
+  document.querySelectorAll("#stats .stat").forEach(el=>el.onclick=()=>{
+    tier=el.dataset.f;cat="all";catN=90;
+    renderStats();renderControls();render();
+  });
 }
 $("#q").addEventListener("input",e=>{q=e.target.value.trim().toLowerCase();render();});
+$("#catbrowse").onclick=()=>{tier="cat";cat="all";catN=90;renderStats();renderControls();render();};
 window.addEventListener("scroll",()=>$("#top").classList.toggle("show",scrollY>500));
 $("#top").onclick=()=>scrollTo({top:0,behavior:"smooth"});
 renderStats();renderControls();render();
