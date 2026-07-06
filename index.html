@@ -182,7 +182,7 @@ footer{border-top:1px solid var(--card-b);padding:34px 0 46px;color:var(--tx3);f
 <script>
 const $=s=>document.querySelector(s);
 let tier="all", cat="all", q="", ccat="all", catN=90, ctier="all";
-let govLoaded=false, govMode="browse", govTab="usecase", govSort="api", govN=60, govLoc="";
+let govLoaded=false, govMode="browse", govTab="st", govSort="api", govN=60, govLoc="";
 let govF={ty:new Set(),cat:new Set(),st:new Set(),uc:null};
 const LANGS=[["curl","curl"],["js","JS fetch"],["py","Python"]];
 
@@ -336,7 +336,7 @@ function govHead(){
    <div style="color:var(--tx3);font-size:.82rem;margin-bottom:16px">2,822 publishers · 8,769 APIs · live from <a href="https://apisetu.gov.in" target="_blank" rel="noopener">API Setu</a> — browse by use case, type, category or state</div>`;
 }
 function renderBrowse(){
-  const tabs=[["usecase","Use Cases"],["ty","Organization Type"],["cat","Category"],["st","Location"]];
+  const tabs=[["st","Location"],["usecase","Use Cases"],["ty","Organization Type"],["cat","Category"]];
   const tabBar=`<div class="ind-tabs">${tabs.map(([k,l])=>`<button class="ind-tab${k===govTab?" on":""}" data-tab="${k}">${l}</button>`).join("")}</div>`;
   let body;
   if(govTab==="usecase"){
