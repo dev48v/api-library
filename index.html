@@ -112,7 +112,7 @@ footer{border-top:1px solid var(--card-b);padding:34px 0 46px;color:var(--tx3);f
 <header class="wrap">
   <a class="sister" href="https://mcp-directory-jade.vercel.app">🔌 Sister site: MCP Directory ↗</a>
   <h1>📡 <span class="g">API Library</span></h1>
-  <p class="sub">A curated library of <b id="totalN">120</b> APIs worth knowing — real free-tier quotas, auth type, country of origin, and copy-paste <b>curl / fetch / Python</b> calls for every one — plus a <b>2,077-API extended catalog — every entry tiered</b>.</p>
+  <p class="sub">A curated library of <b id="totalN">120</b> APIs worth knowing — real free-tier quotas, auth type, country of origin, and copy-paste <b>curl / fetch / Python</b> calls for every one — plus a <b>2,077-API extended catalog</b> and the full <b>India government API directory</b> (2,822 publishers).</p>
   <div class="explain">
     <b>API ≠ MCP.</b> An <b>API</b> is a service's raw HTTP interface — you call it directly from code, any language, no AI needed. An <b>MCP server</b> is a connector that wraps APIs so AI agents can use them. This library is the raw layer: pick an API here, call it from your own code — or check the <a href="https://mcp-directory-jade.vercel.app">MCP Directory</a> for an agent-ready wrapper.
   </div>
@@ -149,6 +149,7 @@ footer{border-top:1px solid var(--card-b);padding:34px 0 46px;color:var(--tx3);f
 <script>
 const $=s=>document.querySelector(s);
 let tier="all", cat="all", q="", ccat="all", catN=90, ctier="all";
+let govLoaded=false, govState="all", govType="all", govCat="all", govN=60;
 const LANGS=[["curl","curl"],["js","JS fetch"],["py","Python"]];
 
 function flag(cc){ if(!cc) return "🌐"; return `<img class="flimg" src="https://flagcdn.com/20x15/${cc.toLowerCase()}.png" srcset="https://flagcdn.com/40x30/${cc.toLowerCase()}.png 2x" width="20" height="15" alt="${cc}" loading="lazy">`; }
@@ -256,6 +257,42 @@ function renderCatalog(){
   $("#grid").innerHTML=(shown.length?shown.map(liteCard).join(""):`<div class="empty">No catalog APIs match.</div>`)+
     (list.length>catN?`<button class="btn p" style="grid-column:1/-1;padding:12px" onclick="catN+=180;render()">Load more (${list.length-catN} left)</button>`:"");
 }
+function loadGov(cb){
+  if(govLoaded){cb();return;}
+  const sc=document.createElement("script"); sc.src="india-gov.js";
+  sc.onload=()=>{govLoaded=true;cb();}; sc.onerror=()=>{cb();}; document.head.appendChild(sc);
+}
+function renderGovSection(){
+  if(typeof INDIA_GOV==="undefined") return "";
+  const states=["all",...[...new Set(INDIA_GOV.map(r=>r.st))].sort()];
+  const types=["all",...[...new Set(INDIA_GOV.map(r=>r.ty))].sort()];
+  const cats=["all",...[...new Set(INDIA_GOV.map(r=>r.cat))].sort()];
+  const list=INDIA_GOV.filter(r=>(govState==="all"||r.st===govState)&&(govType==="all"||r.ty===govType)&&(govCat==="all"||r.cat===govCat)&&(!q||(r.n+" "+r.st+" "+r.cat+" "+r.m).toLowerCase().includes(q)));
+  const totApi=list.reduce((a,r)=>a+r.api,0);
+  const sel=(id,opts,val,lbl)=>`<select id="${id}" class="chip" style="padding:8px 12px;background:var(--card);color:var(--tx);max-width:220px">`+opts.map(o=>`<option value="${o}"${o===val?" selected":""}>${o==="all"?lbl:o}</option>`).join("")+`</select>`;
+  const tyB={"Central Government":"b-key","State Government":"b-nokey","Industry & Private Sector":"b-freemium","Other":"b-basic"};
+  const cards=list.slice(0,govN).map(r=>`<div class="card" style="gap:8px">
+    <div class="chead"><div class="cname">${flag("IN")} ${esc(r.n)}</div>
+      <div class="badges"><span class="b ${tyB[r.ty]||"b-basic"}">${esc(r.ty.replace(" Government","Govt").replace("Industry & Private Sector","Private"))}</span></div></div>
+    <div class="use">${r.m?esc(r.m)+" · ":""}${esc(r.cat)}</div>
+    <div class="cfoot"><div class="cmeta"><span>📍 ${esc(r.st)}</span><span>🔌 ${r.api} API${r.api>1?"s":""}</span></div>
+      <div class="cbtns"><a class="btn p" href="${r.u}" target="_blank" rel="noopener">View APIs ↗</a></div></div></div>`).join("");
+  return `<div style="grid-column:1/-1;margin:26px 0 4px;border-top:1px solid var(--card-b);padding-top:22px">
+    <div style="font-size:1.15rem;font-weight:700;margin-bottom:4px">🏛️ Government API Directory</div>
+    <div style="color:var(--tx3);font-size:.82rem;margin-bottom:12px">${INDIA_GOV.length.toLocaleString()} publishers · 8,769 APIs · live from <a href="https://apisetu.gov.in" target="_blank" rel="noopener">API Setu</a> — filter by state, type &amp; category</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+      ${sel("govStateSel",states,govState,"All 37 states/UTs")}
+      ${sel("govTypeSel",types,govType,"All types")}
+      ${sel("govCatSel",cats,govCat,"All 25 categories")}
+      <span style="align-self:center;font-size:.8rem;color:var(--tx2)">${list.length.toLocaleString()} orgs · ${totApi.toLocaleString()} APIs</span>
+    </div></div>
+    ${cards||`<div class="empty" style="grid-column:1/-1">No government orgs match.</div>`}
+    ${list.length>govN?`<button class="btn p" style="grid-column:1/-1;padding:12px" onclick="govN+=120;render()">Load more (${(list.length-govN).toLocaleString()} left)</button>`:""}`;
+}
+function wireGovSelects(){
+  const bind=(id,set)=>{const el=document.getElementById(id);if(el)el.onchange=e=>{set(e.target.value);govN=60;render();};};
+  bind("govStateSel",v=>govState=v); bind("govTypeSel",v=>govType=v); bind("govCatSel",v=>govCat=v);
+}
 function render(){
   if(tier==="cat"){renderCatalog();return;}
   const ql=x=>!q||x.toLowerCase().includes(q);
@@ -266,8 +303,13 @@ function render(){
   const cur=APIS.filter(curOk);
   const ext=cat==="all"?CATALOG.filter(extOk):[];
   const shown=ext.slice(0,catN);
-  $("#grid").innerHTML=(cur.map(card).join("")+shown.map(liteCard).join("")||`<div class="empty">No APIs match — try another search.</div>`)+
-    (ext.length>catN?`<button class="btn p" style="grid-column:1/-1;padding:12px" onclick="catN+=180;render()">Load more (${ext.length-catN} left)</button>`:"");
+  if(tier==="india" && !govLoaded){ loadGov(()=>render()); }
+  const govHtml = tier==="india" ? renderGovSection() : "";
+  $("#grid").innerHTML=(cur.map(card).join("")+shown.map(liteCard).join(""))+
+    (tier!=="india"&&ext.length>catN?`<button class="btn p" style="grid-column:1/-1;padding:12px" onclick="catN+=180;render()">Load more (${ext.length-catN} left)</button>`:"")+
+    govHtml;
+  if(tier==="india") wireGovSelects();
+  if(!cur.length && !shown.length && !govHtml) $("#grid").innerHTML=`<div class="empty">No APIs match — try another search.</div>`;
 }
 function renderControls(){
   if(tier==="cat"){
