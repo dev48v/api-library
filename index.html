@@ -343,7 +343,7 @@ function renderStats(){
   const GOV=2822;
   const cn=t=>CATALOG.filter(r=>r.t===t).length;
   const nokey=APIS.filter(a=>a.auth.t==="none").length+CATALOG.filter(r=>r.a==="none").length;
-  const ind=APIS.filter(a=>a.cat==="india").length+CATALOG.filter(r=>r.ind).length;
+  const ind=APIS.filter(a=>a.cat==="india").length+CATALOG.filter(r=>r.ind).length+GOV;
   $("#totalN").textContent=APIS.length;
   const on=k=>(tier===k)?" on":"";
   $("#stats").innerHTML=`<div style="width:100%;display:flex;justify-content:center;margin-bottom:10px">
