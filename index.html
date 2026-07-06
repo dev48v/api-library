@@ -133,6 +133,11 @@ footer{border-top:1px solid var(--card-b);padding:34px 0 46px;color:var(--tx3);f
 .chipf:hover{background:rgba(20,184,166,.28)}
 .backbtn{background:none;border:none;color:var(--teal);cursor:pointer;font-size:.85rem;font-weight:600;padding:0}
 @media(max-width:720px){.ind-res{grid-template-columns:1fr}.side{position:static;max-height:none}}
+.fcard-map{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.stmap{width:52px;height:58px;flex-shrink:0;opacity:.5}
+.stmap path{fill:var(--tx2);stroke:var(--teal);stroke-width:1;vector-effect:non-scaling-stroke}
+.fcard-map:hover .stmap{opacity:.95}
+.fcard-map:hover .stmap path{fill:var(--teal)}
 </style>
 </head>
 <body>
@@ -338,7 +343,10 @@ function renderBrowse(){
     body=`<div class="fgrid">${USE_CASES.map((u,i)=>`<div class="uc-card" data-uc="${i}"><div class="uc-ic">${u.ic}</div><div class="uc-d">${esc(u.d)}</div><div class="uc-t">${esc(u.t)}</div><div class="uc-v">View →</div></div>`).join("")}</div>`;
   } else {
     const c=totals(govTab), vals=Object.keys(c).sort((a,b)=>c[b]-c[a]);
-    body=`<div class="fgrid">${vals.map(v=>`<div class="fcard" data-dim="${govTab}" data-val="${esc(v)}"><div class="fn">${esc(v)}</div><div class="fc">${c[v].toLocaleString()} organization${c[v]>1?"s":""}</div></div>`).join("")}</div>`;
+    const isLoc=govTab==="st", SP=(typeof STATE_PATH!=="undefined")?STATE_PATH:{}, SVB=(typeof STATE_VB!=="undefined")?STATE_VB:{}, VB=(typeof MAP_VB!=="undefined")?MAP_VB:"0 0 612 696";
+    const bigMap=v=>v==="All States"||v==="Central/Other";
+    const smap=v=>isLoc&&SP[v]?`<svg class="stmap${bigMap(v)?" stmap-full":""}" viewBox="${bigMap(v)?VB:(SVB[v]||VB)}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path d="${SP[v]}"/></svg>`:"";
+    body=`<div class="fgrid">${vals.map(v=>`<div class="fcard${isLoc?" fcard-map":""}" data-dim="${govTab}" data-val="${esc(v)}"><div><div class="fn">${esc(v)}</div><div class="fc">${c[v].toLocaleString()} organization${c[v]>1?"s":""}</div></div>${smap(v)}</div>`).join("")}</div>`;
   }
   return govHead()+tabBar+body;
 }
