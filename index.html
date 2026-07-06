@@ -149,7 +149,7 @@ footer{border-top:1px solid var(--card-b);padding:34px 0 46px;color:var(--tx3);f
 <script>
 const $=s=>document.querySelector(s);
 let tier="all", cat="all", q="", ccat="all", catN=90, ctier="all";
-let govLoaded=false, govState="all", govType="all", govCat="all", govN=60;
+let govLoaded=false, govState="all", govType="all", govCat="all", govN=60, govSort="api";
 const LANGS=[["curl","curl"],["js","JS fetch"],["py","Python"]];
 
 function flag(cc){ if(!cc) return "🌐"; return `<img class="flimg" src="https://flagcdn.com/20x15/${cc.toLowerCase()}.png" srcset="https://flagcdn.com/40x30/${cc.toLowerCase()}.png 2x" width="20" height="15" alt="${cc}" loading="lazy">`; }
@@ -268,6 +268,8 @@ function renderGovSection(){
   const types=["all",...[...new Set(INDIA_GOV.map(r=>r.ty))].sort()];
   const cats=["all",...[...new Set(INDIA_GOV.map(r=>r.cat))].sort()];
   const list=INDIA_GOV.filter(r=>(govState==="all"||r.st===govState)&&(govType==="all"||r.ty===govType)&&(govCat==="all"||r.cat===govCat)&&(!q||(r.n+" "+r.st+" "+r.cat+" "+r.m).toLowerCase().includes(q)));
+  const SF={api:(a,b)=>b.api-a.api, apiA:(a,b)=>a.api-b.api, name:(a,b)=>a.n.localeCompare(b.n), col:(a,b)=>b.col-a.col, "new":(a,b)=>(b.cr||"").localeCompare(a.cr||"")};
+  list.sort(SF[govSort]||SF.api);
   const totApi=list.reduce((a,r)=>a+r.api,0);
   const sel=(id,opts,val,lbl)=>`<select id="${id}" class="chip" style="padding:8px 12px;background:var(--card);color:var(--tx);max-width:220px">`+opts.map(o=>`<option value="${o}"${o===val?" selected":""}>${o==="all"?lbl:o}</option>`).join("")+`</select>`;
   const tyB={"Central Government":"b-key","State Government":"b-nokey","Industry & Private Sector":"b-freemium","Other":"b-basic"};
@@ -275,7 +277,7 @@ function renderGovSection(){
     <div class="chead"><div class="cname">${flag("IN")} ${esc(r.n)}</div>
       <div class="badges"><span class="b ${tyB[r.ty]||"b-basic"}">${esc(r.ty.replace(" Government","Govt").replace("Industry & Private Sector","Private"))}</span></div></div>
     <div class="use">${r.m?esc(r.m)+" · ":""}${esc(r.cat)}</div>
-    <div class="cfoot"><div class="cmeta"><span>📍 ${esc(r.st)}</span><span>🔌 ${r.api} API${r.api>1?"s":""}</span></div>
+    <div class="cfoot"><div class="cmeta"><span>📍 ${esc(r.st)}</span><span>🔌 ${r.api} API${r.api>1?"s":""}</span>${r.col?`<span>📦 ${r.col}</span>`:""}</div>
       <div class="cbtns"><a class="btn p" href="${r.u}" target="_blank" rel="noopener">View APIs ↗</a></div></div></div>`).join("");
   return `<div style="grid-column:1/-1;margin:26px 0 4px;border-top:1px solid var(--card-b);padding-top:22px">
     <div style="font-size:1.15rem;font-weight:700;margin-bottom:4px">🏛️ Government API Directory</div>
@@ -284,6 +286,9 @@ function renderGovSection(){
       ${sel("govStateSel",states,govState,"All 37 states/UTs")}
       ${sel("govTypeSel",types,govType,"All types")}
       ${sel("govCatSel",cats,govCat,"All 25 categories")}
+      <select id="govSortSel" class="chip" style="padding:8px 12px;background:var(--card);color:var(--tx)">
+        ${[["api","Sort: Most APIs"],["apiA","Sort: Fewest APIs"],["name","Sort: Name A–Z"],["col","Sort: Most collections"],["new","Sort: Newest"]].map(([k,l])=>`<option value="${k}"${k===govSort?" selected":""}>${l}</option>`).join("")}
+      </select>
       <span style="align-self:center;font-size:.8rem;color:var(--tx2)">${list.length.toLocaleString()} orgs · ${totApi.toLocaleString()} APIs</span>
     </div></div>
     ${cards||`<div class="empty" style="grid-column:1/-1">No government orgs match.</div>`}
@@ -291,7 +296,7 @@ function renderGovSection(){
 }
 function wireGovSelects(){
   const bind=(id,set)=>{const el=document.getElementById(id);if(el)el.onchange=e=>{set(e.target.value);govN=60;render();};};
-  bind("govStateSel",v=>govState=v); bind("govTypeSel",v=>govType=v); bind("govCatSel",v=>govCat=v);
+  bind("govStateSel",v=>govState=v); bind("govTypeSel",v=>govType=v); bind("govCatSel",v=>govCat=v); bind("govSortSel",v=>govSort=v);
 }
 function render(){
   if(tier==="cat"){renderCatalog();return;}
