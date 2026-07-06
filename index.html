@@ -342,7 +342,10 @@ function renderBrowse(){
   if(govTab==="usecase"){
     body=`<div class="fgrid">${USE_CASES.map((u,i)=>`<div class="uc-card" data-uc="${i}"><div class="uc-ic">${u.ic}</div><div class="uc-d">${esc(u.d)}</div><div class="uc-t">${esc(u.t)}</div><div class="uc-v">View →</div></div>`).join("")}</div>`;
   } else {
-    const c=totals(govTab), vals=Object.keys(c).sort((a,b)=>c[b]-c[a]);
+    const c=totals(govTab);
+    let vals=Object.keys(c);
+    if(govTab==="st") vals.sort((a,b)=>a==="All States"?-1:b==="All States"?1:a.localeCompare(b));
+    else vals.sort((a,b)=>c[b]-c[a]);
     const isLoc=govTab==="st", SP=(typeof STATE_PATH!=="undefined")?STATE_PATH:{}, SVB=(typeof STATE_VB!=="undefined")?STATE_VB:{}, VB=(typeof MAP_VB!=="undefined")?MAP_VB:"0 0 612 696";
     const bigMap=v=>v==="All States"||v==="Central/Other";
     const smap=v=>isLoc&&SP[v]?`<svg class="stmap${bigMap(v)?" stmap-full":""}" viewBox="${bigMap(v)?VB:(SVB[v]||VB)}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path d="${SP[v]}"/></svg>`:"";
