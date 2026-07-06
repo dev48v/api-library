@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>API Library — 120 Curated APIs + 2,077 Catalog, Free Tiers & Copy-Paste Calls</title>
+<title>API Library — 5,000+ APIs: 120 Curated + 2,077 Catalog + India Gov Directory</title>
 <meta name="description" content="Curated library of 120 APIs across AI, maps, weather, payments, messaging and open data — free-tier quotas, country of origin, auth type, and copy-paste curl / fetch / Python calls.">
 <meta property="og:title" content="API Library — 120 Great APIs, Free & Paid">
 <meta property="og:description" content="Free-tier quotas, auth types and ready-to-run curl / fetch / Python snippets for 120 hand-picked APIs. Sister site of MCP Directory.">
@@ -112,7 +112,7 @@ footer{border-top:1px solid var(--card-b);padding:34px 0 46px;color:var(--tx3);f
 <header class="wrap">
   <a class="sister" href="https://mcp-directory-jade.vercel.app">🔌 Sister site: MCP Directory ↗</a>
   <h1>📡 <span class="g">API Library</span></h1>
-  <p class="sub">A curated library of <b id="totalN">120</b> APIs worth knowing — real free-tier quotas, auth type, country of origin, and copy-paste <b>curl / fetch / Python</b> calls for every one — plus a <b>2,077-API extended catalog</b> and the full <b>India government API directory</b> (2,822 publishers).</p>
+  <p class="sub"><b>5,000+ APIs in one place.</b> <b id="totalN">120</b> hand-curated with real free-tier quotas + copy-paste <b>curl / fetch / Python</b> calls, a <b>2,077-API tiered catalog</b>, and India's full <b>2,822-publisher government directory</b>.</p>
   <div class="explain">
     <b>API ≠ MCP.</b> An <b>API</b> is a service's raw HTTP interface — you call it directly from code, any language, no AI needed. An <b>MCP server</b> is a connector that wraps APIs so AI agents can use them. This library is the raw layer: pick an API here, call it from your own code — or check the <a href="https://mcp-directory-jade.vercel.app">MCP Directory</a> for an agent-ready wrapper.
   </div>
@@ -279,7 +279,7 @@ function renderGovSection(){
     <div class="use">${r.m?esc(r.m)+" · ":""}${esc(r.cat)}</div>
     <div class="cfoot"><div class="cmeta"><span>📍 ${esc(r.st)}</span><span>🔌 ${r.api} API${r.api>1?"s":""}</span>${r.col?`<span>📦 ${r.col}</span>`:""}</div>
       <div class="cbtns"><a class="btn p" href="${r.u}" target="_blank" rel="noopener">View APIs ↗</a></div></div></div>`).join("");
-  return `<div style="grid-column:1/-1;margin:26px 0 4px;border-top:1px solid var(--card-b);padding-top:22px">
+  return `<div style="grid-column:1/-1;margin:0 0 4px">
     <div style="font-size:1.15rem;font-weight:700;margin-bottom:4px">🏛️ Government API Directory</div>
     <div style="color:var(--tx3);font-size:.82rem;margin-bottom:12px">${INDIA_GOV.length.toLocaleString()} publishers · 8,769 APIs · live from <a href="https://apisetu.gov.in" target="_blank" rel="noopener">API Setu</a> — filter by state, type &amp; category</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
@@ -308,13 +308,17 @@ function render(){
   const cur=APIS.filter(curOk);
   const ext=cat==="all"?CATALOG.filter(extOk):[];
   const shown=ext.slice(0,catN);
-  if(tier==="india" && !govLoaded){ loadGov(()=>render()); }
-  const govHtml = tier==="india" ? renderGovSection() : "";
-  $("#grid").innerHTML=(cur.map(card).join("")+shown.map(liteCard).join(""))+
-    (tier!=="india"&&ext.length>catN?`<button class="btn p" style="grid-column:1/-1;padding:12px" onclick="catN+=180;render()">Load more (${ext.length-catN} left)</button>`:"")+
-    govHtml;
-  if(tier==="india") wireGovSelects();
-  if(!cur.length && !shown.length && !govHtml) $("#grid").innerHTML=`<div class="empty">No APIs match — try another search.</div>`;
+  if(tier==="india"){
+    if(!govLoaded){ loadGov(()=>render()); }
+    const govHtml=renderGovSection();
+    const devCards=cur.map(card).join("")+shown.map(liteCard).join("");
+    const devHead=devCards?`<div style="grid-column:1/-1;font-size:1.15rem;font-weight:700;margin:8px 0 2px">⭐ Popular India developer APIs <span style="color:var(--tx3);font-weight:400;font-size:.85rem">(${cur.length+shown.length}, hand-picked)</span></div>`:"";
+    $("#grid").innerHTML=(govHtml||`<div class="empty" style="grid-column:1/-1">Loading government directory…</div>`)+devHead+devCards;
+    wireGovSelects();
+    return;
+  }
+  $("#grid").innerHTML=(cur.map(card).join("")+shown.map(liteCard).join("")||`<div class="empty">No APIs match — try another search.</div>`)+
+    (ext.length>catN?`<button class="btn p" style="grid-column:1/-1;padding:12px" onclick="catN+=180;render()">Load more (${ext.length-catN} left)</button>`:"");
 }
 function renderControls(){
   if(tier==="cat"){
