@@ -18,3 +18,15 @@ jobs:
           node-version: "20"
       - name: Check data.js against CONTRIBUTING.md schema
         run: node validate.mjs
+
+  link-check:
+    runs-on: ubuntu-latest
+    # Informational — dead links are flagged but don't block merge (external sites can be flaky).
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Check curated docs links are alive
+        run: node verify-docs.mjs
